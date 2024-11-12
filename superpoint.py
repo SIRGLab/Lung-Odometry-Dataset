@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 import torch
-from models.matching import Matching
-from models.utils import frame2tensor
+from SuperGluePretrainedNetwork.models.matching import Matching
+from SuperGluePretrainedNetwork.models.utils import frame2tensor
 from opencv_detectors import Detector
 from draw_matches import *
 
