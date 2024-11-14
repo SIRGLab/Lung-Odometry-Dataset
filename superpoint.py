@@ -71,7 +71,7 @@ class SuperPoint(Detector):
         return kpts0, kpts1, mkpts0, mkpts1, scores[valid]
 
 
-    def show_matches(self, frame1, frame2, undistort=True, vertical=False, idx=0, name=''):
+    def show_matches(self, frame1, frame2, undistort=True):
         if undistort:
             # undistort frames
             frame1 = cv2.undistort(frame1, self.K, self.dist_coeffs, None, self.K)
@@ -81,8 +81,7 @@ class SuperPoint(Detector):
         kp1, kp2, mkpts1, mkpts2, scores = self.match_images(frame1, frame2)
 
 
-        draw_matches_sp(frame1, kp1, mkpts1, frame2, kp2, mkpts2, savename=f'matches\\{name}\\{idx}',
-                     vertical=vertical)
+        draw_matches_sp(frame1, kp1, mkpts1, frame2, kp2, mkpts2)
 
 
     def match_pair(self, frame1, frame2, undistort=False, min_pts=10):

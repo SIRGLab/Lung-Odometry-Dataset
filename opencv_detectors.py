@@ -84,7 +84,7 @@ class CVDetectors(Detector):
             return 'success', len(good_matches)
 
 
-    def show_matches(self, frame1, frame2, undistort=True, vertical=False, idx=0, name=''):
+    def show_matches(self, frame1, frame2, undistort=True):
         if undistort:
             # undistort frames
             frame1 = cv2.undistort(frame1, self.K, self.dist_coeffs, None, self.K)
@@ -101,12 +101,10 @@ class CVDetectors(Detector):
             for m, n in matches:
                 if m.distance < 0.75 * n.distance:
                     good_matches.append(m)
-        # elif len(keypoints1) >= 1 and (len(keypoints2) >= 1):
-        #     good_matches = self.bf.match(descriptors1, descriptors2)
         else:
             good_matches = []
 
-        draw_matches(frame1, keypoints1, frame2, keypoints2, good_matches, savename=f'matches\\{name}\\{idx}', vertical=vertical)
+        draw_matches(frame1, keypoints1, frame2, keypoints2, good_matches)
 
 
     def test_pair(self, frame1, frame2, gt_pose, undistort=True, min_pts=10):

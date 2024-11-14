@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-import pymagsac
+#import pymagsac
 from eval_pose import *
 
 
@@ -37,31 +37,32 @@ class Detector():
 
     def eval_magsac(self, kp1, kp2, gt_pose, scores):
 
-        correspondences = np.float32([(list(kp1[i]) + list(kp2[i])) for i in range(len(kp1))]).reshape(-1, 4)
-
-        E, mask = pymagsac.findEssentialMatrix(
-            np.ascontiguousarray(correspondences),
-            np.ascontiguousarray(self.K),
-            np.ascontiguousarray(self.K),
-            480, 480, 480, 480,
-            probabilities=scores,
-            sampler=4,
-            use_magsac_plus_plus=True,
-            sigma_th=1.25)
-
-        if mask.sum() < 5:
-            return 'ransac_fail', None
-
-        inliers = np.array(mask).reshape(-1)
-        inlier_pts1 = kp1[inliers == 1]
-        inlier_pts2 = kp2[inliers == 1]
-
-        # Get angle errors
-        a_e, b_e = self.essential_errors(E, inlier_pts1, inlier_pts2, gt_pose)
-        # Check homography
-        a_hom, b_hom = self.homography_errors(inlier_pts1, inlier_pts2, gt_pose)
-
-        return 'success', [a_e, b_e, a_hom, b_hom]
+        return self.eval_ransac(kp1, kp2, gt_pose)
+        # correspondences = np.float32([(list(kp1[i]) + list(kp2[i])) for i in range(len(kp1))]).reshape(-1, 4)
+        #
+        # E, mask = pymagsac.findEssentialMatrix(
+        #     np.ascontiguousarray(correspondences),
+        #     np.ascontiguousarray(self.K),
+        #     np.ascontiguousarray(self.K),
+        #     480, 480, 480, 480,
+        #     probabilities=scores,
+        #     sampler=4,
+        #     use_magsac_plus_plus=True,
+        #     sigma_th=1.25)
+        #
+        # if mask.sum() < 5:
+        #     return 'ransac_fail', None
+        #
+        # inliers = np.array(mask).reshape(-1)
+        # inlier_pts1 = kp1[inliers == 1]
+        # inlier_pts2 = kp2[inliers == 1]
+        #
+        # # Get angle errors
+        # a_e, b_e = self.essential_errors(E, inlier_pts1, inlier_pts2, gt_pose)
+        # # Check homography
+        # a_hom, b_hom = self.homography_errors(inlier_pts1, inlier_pts2, gt_pose)
+        #
+        # return 'success', [a_e, b_e, a_hom, b_hom]
 
     def essential_errors(self, E, inlier_pts1, inlier_pts2, gt_pose):
 

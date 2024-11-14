@@ -10,7 +10,7 @@ class LoFTR_Detector(Detector):
 
     def __init__(self):
         self.loftr = LoFTR(pretrained='outdoor')
-        self.loftr = self.loftr.cuda()
+        self.loftr = self.loftr.cuda() if torch.cuda.is_available() else self.loftr
 
         # Camera intrinsics
         self.K = np.array([
@@ -25,8 +25,8 @@ class LoFTR_Detector(Detector):
         frame1_gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
         frame2_gray = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
 
-        t1 = torch.from_numpy(frame1_gray)[None][None].cuda() / 255.
-        t2 = torch.from_numpy(frame2_gray)[None][None].cuda() / 255.
+        t1 = torch.from_numpy(frame1_gray)[None][None] / 255.
+        t2 = torch.from_numpy(frame2_gray)[None][None] / 255.
 
         input = {"image0": t1, "image1": t2}
         res = self.loftr(input)
@@ -34,7 +34,7 @@ class LoFTR_Detector(Detector):
         return res['keypoints0'].cpu().numpy(), res['keypoints1'].cpu().numpy()
 
 
-    def show_matches(self, frame1, frame2, undistort=True, vertical=False, idx=0, name=''):
+    def show_matches(self, frame1, frame2, undistort=True):
         if undistort:
             # undistort frames
             frame1 = cv2.undistort(frame1, self.K, self.dist_coeffs, None, self.K)
@@ -43,7 +43,7 @@ class LoFTR_Detector(Detector):
         # Find the keypoints and matches
         kp1, kp2 = self.match_images(frame1, frame2)
 
-        draw_matches_loftr(frame1, kp1, frame2, kp2, savename=f'matches\\{name}\\{idx}', vertical=vertical)
+        draw_matches_loftr(frame1, kp1, frame2, kp2)
 
 
     def match_pair(self, frame1, frame2, undistort=False, min_pts=10):
