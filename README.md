@@ -2,6 +2,8 @@
 
 [Link to the data](https://drive.google.com/file/d/1nO_iRYvd9C7bTg2nVNVcc7umLQi7nHYE/view?usp=sharing)
 
+demo.ipynb notebook shows basic use with the data examples.
+
 If you find this dataset or repository useful, please cite our paper:
 
 ```
